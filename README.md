@@ -27,7 +27,8 @@ To create new router image just add schema.graphql and stucco.json to base image
 ```
 FROM gqleditor/stucco-router-azure-worker:latest
 
-COPY schema.graphql /home/site/wwwroot/schema.graphql /home/site/wwwroot/stucco.json
+COPY schema.graphql /home/site/wwwroot/schema.graphql
+COPY stucco.json /home/site/wwwroot/stucco.json
 ```
 
 ### Run using base image
