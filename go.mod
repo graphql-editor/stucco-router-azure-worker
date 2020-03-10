@@ -5,7 +5,7 @@ go 1.13
 require (
 	github.com/golang/protobuf v1.3.4 // indirect
 	github.com/graphql-editor/azure-functions-golang-worker v0.1.0
-	github.com/graphql-editor/stucco v0.3.4-0.20200310103446-4baac1c83d81
+	github.com/graphql-editor/stucco v0.3.4-0.20200310143842-5fe4b2ad8e98
 	github.com/graphql-go/graphql v0.7.9 // indirect
 	github.com/graphql-go/handler v0.2.3
 	golang.org/x/net v0.0.0-20200301022130-244492dfa37a // indirect

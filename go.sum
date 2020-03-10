@@ -121,8 +121,8 @@ github.com/graphql-editor/azure-functions-golang-worker v0.1.0 h1:uvHa45Ih6sQPwj
 github.com/graphql-editor/azure-functions-golang-worker v0.1.0/go.mod h1:gmOfI0KmfmenYYkddzQt85jrQ4JitzOKTCq+i1vPVCU=
 github.com/graphql-editor/stucco v0.3.0 h1:VO1rFdbpwQaXuWpoNO0Hdw+SDot1n3MVmbxAKf0OLpY=
 github.com/graphql-editor/stucco v0.3.0/go.mod h1:YWLLATZdFlkz8DJdYLUfcnhe14+tG7dRKRo8aHhW6ag=
-github.com/graphql-editor/stucco v0.3.4-0.20200310103446-4baac1c83d81 h1:6PGnLkCfERLOvwQGKKEwyU63N1hwWkiO+Uj04Yq/8dI=
-github.com/graphql-editor/stucco v0.3.4-0.20200310103446-4baac1c83d81/go.mod h1:RBgp5jnEKvi4p3uzJ/Dd8Kj11KCORQyK9fJCPuRIjJg=
+github.com/graphql-editor/stucco v0.3.4-0.20200310143842-5fe4b2ad8e98 h1:iIOEr16RCzWKCQ9kikXXMZ9Dw+5pky14jp4+w3ZJM3w=
+github.com/graphql-editor/stucco v0.3.4-0.20200310143842-5fe4b2ad8e98/go.mod h1:RBgp5jnEKvi4p3uzJ/Dd8Kj11KCORQyK9fJCPuRIjJg=
 github.com/graphql-go/graphql v0.7.8 h1:769CR/2JNAhLG9+aa8pfLkKdR0H+r5lsQqling5WwpU=
 github.com/graphql-go/graphql v0.7.8/go.mod h1:k6yrAYQaSP59DC5UVxbgxESlmVyojThKdORUqGDGmrI=
 github.com/graphql-go/graphql v0.7.9-0.20191125031726-2e2b648ecbe4 h1:gFFEOyUUa0XdH8wxU2zVZE/sF2kVIKQDZcy1bnELa0Q=
