@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/graphql-editor/azure-functions-golang-worker/api"
@@ -46,7 +47,13 @@ func (h *HTTPTrigger) Run(ctx context.Context, logger api.Logger) {
 }
 
 func configValue() string {
-	return "SCHEMA_STUCCO=" + os.Getenv(router.SchemaEnv) + ";" + "STUCCO_CONFIG=" + os.Getenv(utils.StuccoConfigEnv) + ";"
+	stuccoConfig := ""
+	for _, v := range os.Environ() {
+		if strings.HasPrefix(v, "STUCCO_") {
+			stuccoConfig += v + ";"
+		}
+	}
+	return stuccoConfig
 }
 
 func getHandler() (azurehandler.Handler, error) {
