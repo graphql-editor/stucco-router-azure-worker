@@ -26,4 +26,6 @@ COPY --from=build [ "/home/site/wwwroot/graphql/function.so", "/home/site/wwwroo
 COPY . /home/site/wwwroot
 COPY worker.config.json /azure-functions-host/workers/golang/
 WORKDIR /home/site/wwwroot
+ENV AZURE_FUNCTIONS_ENVIRONMENT=Development
+ENV AzureFunctionsJobHost__Logging__Console__IsEnabled=true
 CMD [ "/azure-functions-host/Microsoft.Azure.WebJobs.Script.WebHost" ]
