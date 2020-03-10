@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"crypto/sha256"
+	"net/http"
 	"os"
+	"sync"
 
 	"github.com/graphql-editor/azure-functions-golang-worker/api"
 	"github.com/graphql-editor/stucco/pkg/driver"
@@ -16,7 +18,9 @@ import (
 )
 
 var (
-	handler azurehandler.Handler
+	lock      sync.Mutex
+	configSHA [sha256.Size]byte
+	handler   azurehandler.Handler
 )
 
 // HTTPTrigger is an example httpTrigger
@@ -27,13 +31,36 @@ type HTTPTrigger struct {
 
 // Run implements function behaviour
 func (h *HTTPTrigger) Run(ctx context.Context, logger api.Logger) {
+	handler, err := getHandler()
+	if err != nil {
+		logger.Errorf("could not get handler: %v", err)
+		h.Response = api.Response{
+			Headers: http.Header{
+				"content-type": []string{"text/plain"},
+			},
+			StatusCode: http.StatusInternalServerError,
+			Body:       err.Error(),
+		}
+		return
+	}
 	h.Response = handler.ServeHTTP(ctx, logger, h.Request)
 }
 
 // Function exports function entry point
 var Function HTTPTrigger
 
-func init() {
+func configChecksum() [sha256.Size]byte {
+	return sha256.Sum256([]byte(os.Getenv(router.SchemaEnv) + os.Getenv(utils.StuccoConfigEnv)))
+}
+
+func getHandler() (azurehandler.Handler, error) {
+	lock.Lock()
+	rhandler := handler
+	checksum := configSHA
+	lock.Unlock()
+	if rhandler.Handler != nil && checksum == configChecksum() {
+		return rhandler, nil
+	}
 	driver.Register(driver.Config{
 		Provider: "azure",
 		Runtime:  "function",
@@ -44,13 +71,13 @@ func init() {
 	})
 	var cfg router.Config
 	if err := utils.LoadConfigFile("", &cfg); err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(1)
+		return azurehandler.Handler{}, err
 	}
 	router, err := router.NewRouter(cfg)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
+		return azurehandler.Handler{}, err
 	}
+	lock.Lock()
 	handler = azurehandler.Handler{
 		Handler: handlers.WithProtocolInContext(gqlhandler.New(&gqlhandler.Config{
 			Schema:   &router.Schema,
@@ -58,4 +85,8 @@ func init() {
 			GraphiQL: true,
 		})),
 	}
+	configSHA = configChecksum()
+	rhandler = handler
+	lock.Unlock()
+	return rhandler, nil
 }
