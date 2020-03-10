@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"crypto/sha256"
 	"net/http"
 	"os"
 	"sync"
@@ -18,9 +17,9 @@ import (
 )
 
 var (
-	lock      sync.Mutex
-	configSHA [sha256.Size]byte
-	handler   azurehandler.Handler
+	lock    sync.Mutex
+	config  string
+	handler azurehandler.Handler
 )
 
 // HTTPTrigger is an example httpTrigger
@@ -49,16 +48,16 @@ func (h *HTTPTrigger) Run(ctx context.Context, logger api.Logger) {
 // Function exports function entry point
 var Function HTTPTrigger
 
-func configChecksum() [sha256.Size]byte {
-	return sha256.Sum256([]byte(os.Getenv(router.SchemaEnv) + os.Getenv(utils.StuccoConfigEnv)))
+func configValue() string {
+	return "SCHEMA_STUCCO=" + os.Getenv(router.SchemaEnv) + ";" + "STUCCO_CONFIG=" + os.Getenv(utils.StuccoConfigEnv) + ";"
 }
 
 func getHandler() (azurehandler.Handler, error) {
 	lock.Lock()
 	rhandler := handler
-	checksum := configSHA
+	currentConfig := config
 	lock.Unlock()
-	if rhandler.Handler != nil && checksum == configChecksum() {
+	if rhandler.Handler != nil && currentConfig == configValue() {
 		return rhandler, nil
 	}
 	driver.Register(driver.Config{
@@ -85,7 +84,7 @@ func getHandler() (azurehandler.Handler, error) {
 			GraphiQL: true,
 		})),
 	}
-	configSHA = configChecksum()
+	config = configValue()
 	rhandler = handler
 	lock.Unlock()
 	return rhandler, nil
